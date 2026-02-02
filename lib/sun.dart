@@ -28,3 +28,8 @@ String previewText(String content) {
 
   return '${lines[0]}\n${lines[1]}\n…';
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+enum NoteMode { create, view, edit }
+
+enum NoteAction { deleted }

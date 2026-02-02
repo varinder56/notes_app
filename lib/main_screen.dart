@@ -3,6 +3,7 @@ import 'package:notes_var/note_screen.dart';
 import 'package:notes_var/sun.dart';
 import 'package:intl/intl.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -14,6 +15,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<ANote> notes = [];
   int navIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +52,26 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           margin: EdgeInsets.all(0),
                           child: ListTile(
+                            onTap: () async {
+                              final updatedNote = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NoteDetailPage(
+                                    mode: NoteMode.view,
+                                    note: notes[index],
+                                  ),
+                                ),
+                              );
+                              if (updatedNote == NoteAction.deleted) {
+                                setState(() {
+                                  notes.removeAt(index);
+                                });
+                              } else if (updatedNote != null) {
+                                setState(() {
+                                  notes[index] = updatedNote;
+                                });
+                              }
+                            },
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -84,42 +110,64 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     itemCount: notes.length,
                     itemBuilder: (context, index) {
-                      return Card(
-                        color: Color(0xFFE6E8EB),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        margin: EdgeInsets.all(0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                notes[index].title,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                      return InkWell(
+                        onTap: () async {
+                          final updatedNote = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NoteDetailPage(
+                                mode: NoteMode.view,
+                                note: notes[index],
                               ),
-                              SizedBox(height: 4),
-                              Expanded(
-                                child: Text(
-                                  previewText(notes[index].content),
-                                  maxLines: 3,
+                            ),
+                          );
+                          if (updatedNote == NoteAction.deleted) {
+                            setState(() {
+                              notes.removeAt(index);
+                            });
+                          } else if (updatedNote != null) {
+                            setState(() {
+                              notes[index] = updatedNote;
+                            });
+                          }
+                        },
+                        child: Card(
+                          color: Color(0xFFE6E8EB),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          margin: EdgeInsets.all(0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  notes[index].title,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                  ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Text(
-                                  DateFormat(
-                                    'dd/MM/yyyy',
-                                  ).format(notes[index].dateCreated),
+                                SizedBox(height: 4),
+                                Expanded(
+                                  child: Text(
+                                    previewText(notes[index].content),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(
+                                    DateFormat(
+                                      'dd/MM/yyyy',
+                                    ).format(notes[index].dateCreated),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -134,7 +182,9 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () async {
           final newNote = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => NoteDetailPage()),
+            MaterialPageRoute(
+              builder: (context) => NoteDetailPage(mode: NoteMode.create),
+            ),
           );
           if (newNote != null) {
             setState(() {
@@ -164,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             label: " Grid",
-            icon: FaIcon(FontAwesomeIcons.gridVertical),
+            icon: FaIcon(FontAwesomeIcons.gripVertical),
           ),
         ],
       ),
