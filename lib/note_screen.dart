@@ -11,6 +11,7 @@ class NoteDetailPage extends StatefulWidget {
 
 class _NoteDetailPageState extends State<NoteDetailPage> {
   late NoteMode _mode;
+  double bookOpacity = 1.0;
 
   @override
   void initState() {
@@ -20,6 +21,13 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
       titleController.text = widget.note!.title;
       contentController.text = widget.note!.content;
     }
+    contentController.addListener(() {
+      final lines = "\n".allMatches(contentController.text).length + 1;
+
+      setState(() {
+        bookOpacity = lines > 3 ? 0.15 : 1.0;
+      });
+    });
   }
 
   var titleController = TextEditingController();
@@ -29,7 +37,9 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
   Widget build(BuildContext context) {
     bool isReadOnly = _mode == NoteMode.view;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text("Note"),
         actions: _mode == NoteMode.view
             ? [
@@ -106,16 +116,29 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: TextField(
-                controller: contentController,
-                focusNode: _contentFocusNode,
-                readOnly: isReadOnly,
-                decoration: InputDecoration(
-                  hintText: "Start typing your note here...",
-                  border: InputBorder.none,
-                ),
-                maxLines: null,
-                textAlignVertical: TextAlignVertical.center,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Center(
+                    child: AnimatedOpacity(
+                      opacity: bookOpacity,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.easeOut,
+                      child: Image.asset("assets/images/image.png"),
+                    ),
+                  ),
+                  TextField(
+                    controller: contentController,
+                    focusNode: _contentFocusNode,
+                    readOnly: isReadOnly,
+                    decoration: InputDecoration(
+                      hintText: "Start typing your note here...",
+                      border: InputBorder.none,
+                    ),
+                    maxLines: null,
+                    textAlignVertical: TextAlignVertical.center,
+                  ),
+                ],
               ),
             ),
           ),

@@ -8,14 +8,7 @@ class ANote {
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 ANote createNote({required String title, required String content}) {
-  List<String> lines = content.trim().split('\n');
-  if (title.trim().isNotEmpty) {
-    return ANote(title: title, content: content);
-  } else {
-    final resolvedTitle = lines.isNotEmpty ? lines[0] : 'Untitled';
-    final resolvedContent = lines.length > 1 ? lines.sublist(1).join('\n') : '';
-    return ANote(title: resolvedTitle, content: resolvedContent);
-  }
+  return ANote(title: title, content: content);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,13 +16,48 @@ String previewText(String content) {
   final lines = content.split('\n');
 
   if (lines.length <= 2) {
-    return content; // show as-is
+    return content;
   }
-
-  return '${lines[0]}\n${lines[1]}\n…';
+  return '${lines[1]}\n${lines[2]}\n…';
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 enum NoteMode { create, view, edit }
 
 enum NoteAction { deleted }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+List<ANote> onboardingNotes() {
+  return [
+    ANote(
+      title: "Welcome👋",
+      content:
+          "This app helps you write quickly and stay organized.\n\n"
+          "Notes are simple: a title and content. Let’s get started.",
+    ),
+    ANote(
+      title: "Create a Note ➕",
+      content:
+          "Tap the + button to create a new note.\n\n"
+          "You can start typing right away — no setup needed.",
+    ),
+    ANote(
+      title: "Edit & Save ✏️",
+      content:
+          "Open any note and tap the edit icon.\n\n"
+          "Changes are saved when you tap the ✔ button.",
+    ),
+    ANote(
+      title: "Smart Titles 🧠",
+      content:
+          "If you forget to add a title,\n"
+          "the first line of your note is shown as the title — only for display.",
+    ),
+    ANote(
+      title: " 🗑️",
+      content:
+          "You can edit or delete any note anytime.\n\n"
+          "These guide notes can be removed once you’re comfortable.",
+    ),
+  ];
+}

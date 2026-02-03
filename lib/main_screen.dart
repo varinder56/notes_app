@@ -18,8 +18,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _initializeNoteList();
   }
 
+  ///////////////////
+  Future _initializeNoteList() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool freshApp = prefs.getBool("fresh") ?? true;
+    if (freshApp) {
+      setState(() {
+        notes = onboardingNotes();
+      });
+      await prefs.setBool("fresh", false);
+    } else {}
+  }
+
+  /// /////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,10 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             tileColor: Color(0xFFE6E8EB),
 
                             title: Text(
-                              notes[index].title,
+                              notes[index].title.isNotEmpty
+                                  ? notes[index].title
+                                  : notes[index].content.split('\n').first,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 25,
+                                fontSize: 20,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -143,10 +159,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  notes[index].title,
+                                  notes[index].title.isNotEmpty
+                                      ? notes[index].title
+                                      : notes[index].content.split('\n').first,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 25,
+                                    fontSize: 20,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),

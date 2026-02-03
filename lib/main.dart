@@ -13,7 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '(: Write yours - Notes App ',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        colorScheme: .fromSeed(seedColor: Colors.white),
+        useMaterial3: true,
+      ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
