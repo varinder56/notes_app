@@ -55,6 +55,7 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () async {
+                    final navigator = Navigator.of(context);
                     final confirm = await showDialog(
                       context: context,
                       builder: (context) {
@@ -85,8 +86,9 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                         );
                       },
                     );
+
                     if (confirm == true) {
-                      Navigator.pop(context, NoteAction.deleted);
+                      navigator.pop(NoteAction.deleted);
                     }
                   },
                 ),
