@@ -160,6 +160,7 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                 final currentNote = createNote(
                   title: titleController.text,
                   content: contentController.text,
+                  date: DateTime.now(),
                 );
                 Navigator.pop(context, currentNote);
               },

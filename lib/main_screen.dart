@@ -109,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             trailing: Text(
                               DateFormat(
                                 'dd/MM/yyyy',
-                              ).format(notes[index].dateCreated),
+                              ).format(notes[index].date),
                             ),
                           ),
                         ),
@@ -181,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   child: Text(
                                     DateFormat(
                                       'dd/MM/yyyy',
-                                    ).format(notes[index].dateCreated),
+                                    ).format(notes[index].date),
                                   ),
                                 ),
                               ],
