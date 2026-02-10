@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:notes_var/sun.dart';
 
 class DBHelper {
   DBHelper._();
@@ -23,7 +24,7 @@ class DBHelper {
       version: 1,
       onCreate: (db, version) {
         db.execute(
-          "create table $tableName ($col_1 integer primary key autoincrement, $col_2 text, $col_3 text, $col_4 Date)",
+          "create table $tableName ($col_1 integer primary key autoincrement, $col_2 text, $col_3 text, $col_4 text)",
         );
       },
     );
@@ -36,4 +37,31 @@ class DBHelper {
   }
 
   //      //         //
+  Future<void> insertNote(ANote note) async {
+    final db = await getDB();
+    await db.insert(tableName, note.mapBanJao());
+  }
+
+  //      //         //
+  Future<List<ANote>> fetchNotesFromDB() async {
+    final db = await getDB();
+    final List<Map<String, dynamic>> rows = await db.query(
+      tableName,
+      orderBy: "$col_1 DESC",
+    );
+    return rows.map((harchiji) {
+      return ANote.fromMap(harchiji);
+    }).toList();
+  }
+
+  //      //         //
+  Future<void> updateNote(ANote note) async {
+    final db = await getDB();
+    await db.update(
+      tableName,
+      note.mapBanJao(),
+      where: "$col_1 = ?",
+      whereArgs: [note.id],
+    );
+  }
 }

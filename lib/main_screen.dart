@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes_var/data/local_data/data_connection.dart';
 import 'package:notes_var/note_screen.dart';
 import 'package:notes_var/sun.dart';
 import 'package:intl/intl.dart';
@@ -26,11 +27,13 @@ class _MyHomePageState extends State<MyHomePage> {
     final prefs = await SharedPreferences.getInstance();
     final bool freshApp = prefs.getBool("fresh") ?? true;
     if (freshApp) {
-      setState(() {
-        notes = onboardingNotes();
-      });
+      for (final harNote in onboardingNotes()) {
+        await DBHelper.getDBinstance.insertNote(harNote);
+      }
       await prefs.setBool("fresh", false);
-    } else {}
+    }
+    notes = await DBHelper.getDBinstance.fetchNotesFromDB();
+    setState(() {});
   }
 
   /// /////////////////////////
@@ -198,16 +201,15 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.blueGrey[100],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         onPressed: () async {
-          final newNote = await Navigator.push(
+          final res = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => NoteDetailPage(mode: NoteMode.create),
             ),
           );
-          if (newNote != null) {
-            setState(() {
-              notes.add(newNote);
-            });
+          if (res == true) {
+            await DBHelper.getDBinstance.fetchNotesFromDB();
+            setState(() {});
           }
         },
         child: FaIcon(FontAwesomeIcons.plus, size: 25),

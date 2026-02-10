@@ -1,9 +1,31 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 class ANote {
+  final int? id;
   final String title;
   final String content;
   final DateTime date;
-  ANote({required this.title, required this.content, required this.date});
+  ANote({
+    this.id,
+    required this.title,
+    required this.content,
+    required this.date,
+  });
+  factory ANote.fromMap(Map<String, dynamic> ahmap) {
+    return ANote(
+      id: ahmap["sno"],
+      title: ahmap["title"],
+      content: ahmap["content"],
+      date: DateTime.parse(ahmap["date"]),
+    );
+  }
+  Map<String, dynamic> mapBanJao() {
+    return {
+      "sno": id,
+      "title": title,
+      "content": content,
+      "date": date.toIso8601String(),
+    };
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

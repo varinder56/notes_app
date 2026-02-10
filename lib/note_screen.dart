@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notes_var/sun.dart';
+import 'package:notes_var/data/local_data/data_connection.dart';
 
 class NoteDetailPage extends StatefulWidget {
   final NoteMode mode;
@@ -152,7 +153,7 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
-              onPressed: () {
+              onPressed: () async {
                 if (contentController.text.trim().isEmpty) {
                   Navigator.pop(context);
                   return;
@@ -162,7 +163,8 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                   content: contentController.text,
                   date: DateTime.now(),
                 );
-                Navigator.pop(context, currentNote);
+                await DBHelper.getDBinstance.insertNote(currentNote);
+                Navigator.pop(context, true);
               },
               child: Icon(Icons.check_outlined, size: 25),
             )
