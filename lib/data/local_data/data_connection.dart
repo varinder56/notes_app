@@ -64,4 +64,10 @@ class DBHelper {
       whereArgs: [note.id],
     );
   }
+  //      //         //
+
+  Future<void> deleteNote(int id) async {
+    final db = await getDB();
+    await db.delete(tableName, where: "$col_1 = ?", whereArgs: [id]);
+  }
 }

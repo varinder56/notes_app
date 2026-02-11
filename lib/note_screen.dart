@@ -41,7 +41,13 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("Note"),
+        title: Text(
+          widget.mode == NoteMode.create
+              ? "New Note"
+              : (widget.note!.title.isNotEmpty
+                    ? widget.note!.title
+                    : widget.note!.content.split('\n').first),
+        ),
         actions: _mode == NoteMode.view
             ? [
                 IconButton(
@@ -88,7 +94,8 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                       },
                     );
 
-                    if (confirm == true) {
+                    if (confirm == true && widget.note?.id != null) {
+                      await DBHelper.getDBinstance.deleteNote(widget.note!.id!);
                       navigator.pop(NoteAction.deleted);
                     }
                   },
@@ -154,17 +161,23 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                 borderRadius: BorderRadius.circular(30),
               ),
               onPressed: () async {
+                final navigator = Navigator.of(context);
                 if (contentController.text.trim().isEmpty) {
                   Navigator.pop(context);
                   return;
                 }
-                final currentNote = createNote(
+                final currentNote = ANote(
+                  id: widget.note?.id,
                   title: titleController.text,
                   content: contentController.text,
                   date: DateTime.now(),
                 );
-                await DBHelper.getDBinstance.insertNote(currentNote);
-                Navigator.pop(context, true);
+                if (_mode == NoteMode.edit) {
+                  await DBHelper.getDBinstance.updateNote(currentNote);
+                } else {
+                  await DBHelper.getDBinstance.insertNote(currentNote);
+                }
+                navigator.pop(true);
               },
               child: Icon(Icons.check_outlined, size: 25),
             )

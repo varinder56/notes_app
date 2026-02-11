@@ -79,14 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                 ),
                               );
-                              if (updatedNote == NoteAction.deleted) {
-                                setState(() {
-                                  notes.removeAt(index);
-                                });
-                              } else if (updatedNote != null) {
-                                setState(() {
-                                  notes[index] = updatedNote;
-                                });
+                              if (updatedNote == true ||
+                                  updatedNote == NoteAction.deleted) {
+                                notes = await DBHelper.getDBinstance
+                                    .fetchNotesFromDB();
+                                setState(() {});
                               }
                             },
                             shape: RoundedRectangleBorder(
@@ -140,14 +137,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                           );
-                          if (updatedNote == NoteAction.deleted) {
-                            setState(() {
-                              notes.removeAt(index);
-                            });
-                          } else if (updatedNote != null) {
-                            setState(() {
-                              notes[index] = updatedNote;
-                            });
+                          if (updatedNote == true ||
+                              updatedNote == NoteAction.deleted) {
+                            notes = await DBHelper.getDBinstance
+                                .fetchNotesFromDB();
+                            setState(() {});
                           }
                         },
                         child: Card(
@@ -208,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           );
           if (res == true) {
-            await DBHelper.getDBinstance.fetchNotesFromDB();
+            notes = await DBHelper.getDBinstance.fetchNotesFromDB();
             setState(() {});
           }
         },
