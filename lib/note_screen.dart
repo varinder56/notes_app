@@ -172,12 +172,17 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                   content: contentController.text,
                   date: DateTime.now(),
                 );
+                bool isUPorinsert;
                 if (_mode == NoteMode.edit) {
-                  await DBHelper.getDBinstance.updateNote(currentNote);
+                  isUPorinsert = await DBHelper.getDBinstance.updateNote(
+                    currentNote,
+                  );
                 } else {
-                  await DBHelper.getDBinstance.insertNote(currentNote);
+                  isUPorinsert = await DBHelper.getDBinstance.insertNote(
+                    currentNote,
+                  );
                 }
-                navigator.pop(true);
+                navigator.pop(isUPorinsert);
               },
               child: Icon(Icons.check_outlined, size: 25),
             )

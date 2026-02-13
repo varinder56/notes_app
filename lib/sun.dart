@@ -10,7 +10,7 @@ class ANote {
     required this.content,
     required this.date,
   });
-  factory ANote.fromMap(Map<String, dynamic> ahmap) {
+  factory ANote.objectBanJao(Map<String, dynamic> ahmap) {
     return ANote(
       id: ahmap["sno"],
       title: ahmap["title"],

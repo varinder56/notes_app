@@ -37,9 +37,10 @@ class DBHelper {
   }
 
   //      //         //
-  Future<void> insertNote(ANote note) async {
+  Future<bool> insertNote(ANote note) async {
     final db = await getDB();
-    await db.insert(tableName, note.mapBanJao());
+    int rowseffected = await db.insert(tableName, note.mapBanJao());
+    return rowseffected > 0;
   }
 
   //      //         //
@@ -50,24 +51,30 @@ class DBHelper {
       orderBy: "$col_1 DESC",
     );
     return rows.map((harchiji) {
-      return ANote.fromMap(harchiji);
+      return ANote.objectBanJao(harchiji);
     }).toList();
   }
 
   //      //         //
-  Future<void> updateNote(ANote note) async {
+  Future<bool> updateNote(ANote note) async {
     final db = await getDB();
-    await db.update(
+    int rowseffected = await db.update(
       tableName,
       note.mapBanJao(),
       where: "$col_1 = ?",
       whereArgs: [note.id],
     );
+    return rowseffected > 0;
   }
   //      //         //
 
-  Future<void> deleteNote(int id) async {
+  Future<bool> deleteNote(int id) async {
     final db = await getDB();
-    await db.delete(tableName, where: "$col_1 = ?", whereArgs: [id]);
+    int rowseffected = await db.delete(
+      tableName,
+      where: "$col_1 = ?",
+      whereArgs: [id],
+    );
+    return rowseffected > 0;
   }
 }
